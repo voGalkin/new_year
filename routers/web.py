@@ -2,7 +2,7 @@ from fastapi import APIRouter, Request, Form
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 from database import get_greeting
-from utils import generate_short_hash, generate_qr_code_base64
+from utils import generate_qr_code_file, generate_short_hash
 from database import add_greeting
 import os
 
@@ -28,7 +28,7 @@ def submit_form(request: Request, name: str = Form(...), message: str = Form(...
     add_greeting(user_id, name, message)
     
     # Генерируем QR-код
-    qr_path, url = generate_qr_code_base64(user_id)
+    qr_path, url = generate_qr_code_file(user_id)
     qr_relative_path = os.path.relpath(qr_path, start=".")
 
     return templates.TemplateResponse("index.html", {

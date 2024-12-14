@@ -7,7 +7,7 @@ from fastapi.staticfiles import StaticFiles
 # Инициализация приложения и БД
 app = FastAPI()
 init_db()
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 # Подключаем роутеры
 app.include_router(api.router, prefix="/api")

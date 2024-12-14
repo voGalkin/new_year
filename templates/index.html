@@ -67,39 +67,38 @@
 
     <script>
         document.getElementById("greeting-form").addEventListener("submit", async function(event) {
-            event.preventDefault(); // Предотвращаем стандартное поведение формы
-            
-            const formData = new FormData();
-            formData.append("name", document.getElementById("name").value);
-            formData.append("message", document.getElementById("message").value);
+        event.preventDefault();
 
-            try {
-                // POST api/create_greeting на создание поздравления
-                const response = await fetch("/api/create_greeting/", {
-                    method: "POST",
-                    body: formData
-                });
+        const formData = new FormData();
+        formData.append("name", document.getElementById("name").value);
+        formData.append("message", document.getElementById("message").value);
 
-                if (!response.ok) {
-                    throw new Error("Failed to create greeting. Try again later.");
-                }
+        try {
+            const response = await fetch("/api/create_greeting/", {
+                method: "POST",
+                body: formData
+            });
 
-                // Получаем данные из ответа
-                const data = await response.json();
-
-                // Отображаем результат
-                document.getElementById("result").innerHTML = `
-                    <h2>Your QR Code</h2>
-                    <img src="data:image/png;base64,${data.qr_code_base64}" alt="QR Code" style="max-width: 200px; margin-top: 10px;">
-                    <p>Scan the QR code or visit: <a href="${data.link}" target="_blank">${data.link}</a></p>
-                `;
-            } catch (error) {
-                console.error("Error:", error);
-                document.getElementById("result").innerHTML = `
-                    <p style="color: red;">An error occurred: ${error.message}</p>
-                `;
+            if (!response.ok) {
+                throw new Error(`Server error: ${response.status}`);
             }
-        });
+
+            const data = await response.json();
+            console.log("Response from server:", data);
+
+            document.getElementById("result").innerHTML = `
+                <h2>Ваш QR код</h2>
+                <img src="${data.qr_code_url}" alt="QR Code" style="max-width: 200px; margin-top: 10px;">
+                <p>Отправьте QR код или ссылку на поздравление: <a href="${data.link}" target="_blank">${data.link}</a></p>
+            `;
+        } catch (error) {
+            console.error("Error:", error);
+            document.getElementById("result").innerHTML = `
+                <p style="color: red;">An error occurred: ${error.message}</p>
+            `;
+        }
+    });
+
     </script>
 </body>
 </html>

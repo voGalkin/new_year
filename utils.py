@@ -1,8 +1,7 @@
 import hashlib
 import os
 import qrcode
-import io
-import base64
+from hashlib import sha256
 
 QR_DIR = "qr_codes"
 os.makedirs(QR_DIR, exist_ok=True)
@@ -14,16 +13,22 @@ def generate_short_hash(name: str, message: str) -> str:
     text = f"{name}-{message}"
     return hashlib.sha256(text.encode()).hexdigest()[:8]
 
-def generate_qr_code_base64(user_id: str) -> str:
+def generate_qr_code_file(user_id: str) -> str:
     """
-    Генерирует QR-код с ссылкой и возвращает его в формате base64.
+    Генерирует QR-код, сохраняет его в файл и возвращает путь.
     """
+    # Генерация ссылки
     url = f"http://127.0.0.1:8000/greet/{user_id}"
+
+    # Создание QR-кода
     qr_image = qrcode.make(url)
 
-    # Сохранение QR-кода в памяти как base64
-    buffered = io.BytesIO()
-    qr_image.save(buffered, format="PNG")
-    img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+    # Генерация имени файла на основе user_id (короткий хеш)
+    filename = f"{sha256(user_id.encode()).hexdigest()[:8]}.png"
+    file_path = os.path.join("static", "qrcodes", filename)
 
-    return img_str, url
+    # Сохранение файла
+    qr_image.save(file_path)
+
+    # Возвращаем URL на статический файл
+    return f"/static/qrcodes/{filename}", url
