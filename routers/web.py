@@ -22,13 +22,13 @@ def submit_form(request: Request, name: str = Form(...), message: str = Form(...
     Обрабатывает форму и показывает QR-код.
     """
     # Генерируем короткий хеш
-    user_id = generate_short_hash(name, message)
+    greeting_id = generate_short_hash(name, message)
 
     # Добавляем в БД
-    add_greeting(user_id, name, message)
+    add_greeting(greeting_id, name, message)
     
     # Генерируем QR-код
-    qr_path, url = generate_qr_code_file(user_id)
+    qr_path, url = generate_qr_code_file(greeting_id)
     qr_relative_path = os.path.relpath(qr_path, start=".")
 
     return templates.TemplateResponse("index.html", {
@@ -37,12 +37,12 @@ def submit_form(request: Request, name: str = Form(...), message: str = Form(...
         "link": url
     })
 
-@router.get("/greet/{user_id}", response_class=HTMLResponse)
-def greet_user(request: Request, user_id: str):
+@router.get("/greet/{greeting_id}", response_class=HTMLResponse)
+def greet_user(request: Request, greeting_id: str):
     """
     Страница с персональным поздравлением.
     """
-    greeting = get_greeting(user_id)
+    greeting = get_greeting(greeting_id)
     if greeting:
         name, message = greeting
         return templates.TemplateResponse("greeting_template.html", {
