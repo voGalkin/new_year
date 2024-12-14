@@ -1,0 +1,4 @@
+*.db
+__pycache__/
+ny_env/
+qr_codes/
