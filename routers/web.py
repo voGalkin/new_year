@@ -6,7 +6,7 @@ from utils import generate_qr_code_file, generate_short_hash
 from database import add_greeting
 import os
 
-router = APIRouter()
+router = APIRouter(tags=["Web"])
 templates = Jinja2Templates(directory="templates")
 
 @router.get("/", response_class=HTMLResponse)

@@ -2,8 +2,10 @@ import hashlib
 import os
 import qrcode
 from hashlib import sha256
+import time
+QR_DIR = "static/qrcodes"
+EXPIRATION_TIME = 1
 
-QR_DIR = "qr_codes"
 os.makedirs(QR_DIR, exist_ok=True)
 
 def generate_short_hash(name: str, message: str) -> str:
@@ -32,3 +34,22 @@ def generate_qr_code_file(greeting_id: str) -> str:
 
     # Возвращаем URL на статический файл
     return f"/static/qrcodes/{filename}", url
+
+def delete_qrcodes():
+    if not os.path.exists(QR_DIR):
+        raise FileNotFoundError(f"Папка с QR-кодами не найдена: {QR_DIR}")
+    
+    current_time = time.time()
+    deleted_files_count = 0
+    
+    for filename in os.listdir(QR_DIR):
+        file_path = os.path.join(QR_DIR, filename)
+        if os.path.isfile(file_path) and current_time - os.path.getctime(file_path) > EXPIRATION_TIME:
+            try:
+                os.remove(file_path)
+                deleted_files_count += 1
+                print(f"Удален файл: {file_path}")
+            except Exception as e:
+                print(f"Ошибка при удалении файла {file_path}: {e}")
+
+    return deleted_files_count
