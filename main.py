@@ -8,6 +8,7 @@ from fastapi.staticfiles import StaticFiles
 app = FastAPI()
 init_db()
 app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/frontend/images", StaticFiles(directory="frontend/images"), name="images")
 
 # Подключаем роутеры
 app.include_router(api.router, prefix="/api")
