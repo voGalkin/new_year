@@ -7,7 +7,7 @@ from database import add_greeting
 import os
 
 router = APIRouter(tags=["Web"])
-templates = Jinja2Templates(directory="templates")
+templates = Jinja2Templates(directory="frontend/templates")
 
 @router.get("/", response_class=HTMLResponse, summary="Главная страница с формой для создания поздравления", description="Этот эндпоинт отображает главную страницу с формой для ввода имени и сообщения для создания поздравления.")
 def home_page(request: Request):
