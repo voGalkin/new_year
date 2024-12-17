@@ -4,7 +4,7 @@ import qrcode
 from hashlib import sha256
 import time
 QR_DIR = "static/qrcodes"
-EXPIRATION_TIME = 10
+EXPIRATION_TIME = 5*60
 
 os.makedirs(QR_DIR, exist_ok=True)
 
