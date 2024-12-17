@@ -1,42 +1,154 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Personal Greeting</title>
-    <style>
-        body {
-            background-color: #4B3E68;
-            color: white;
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 0;
-            padding: 0;
-        }
-        .content {
-            padding-top: 50px;
-        }
-        .title {
-            font-size: 2em;
-        }
-        .message {
-            margin-top: 20px;
-            font-size: 1.5em;
-        }
-        .footer {
-            margin-top: 30px;
-            font-size: 0.9em;
-        }
-    </style>
-</head>
-<body>
-    <div class="content">
-        <h1 class="title">Счастливого Нового Года!</h1>
-        <p class="message">Дорогой {{ name }},</p>
-        <p class="message">{{ message }}</p>
-        <div class="footer">
-            Отправлено с любовью ❤️
-        </div>
-    </div>
-</body>
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Tangerine:wght@400;700&display=swap"
+			rel="stylesheet"
+		/>
+		<title>Personal Greeting</title>
+		<style>
+			@font-face {
+				font-family: 'Majestic';
+				src: url(/frontend/fonts/majestic_x.ttf);
+			}
+			body {
+				background-color: rgb(216, 81, 67);
+				color: white;
+				font-family: Arial, sans-serif;
+				text-align: center;
+				margin: 0;
+				padding: 0;
+			}
+			.content {
+				padding-top: 50px;
+			}
+			.title {
+				font-family: 'Tangerine';
+				font-weight: 700;
+				font-size: 4em;
+				margin: 30px 0;
+				line-height: 50px;
+			}
+			.message {
+				margin-top: 10px;
+				font-size: 1.5em;
+				font-family: 'Montserrat';
+				font-weight: 400;
+				white-space: break-all;
+				width: 600px;
+				text-align: center;
+				margin: 30px auto;
+				line-height: 35px;
+			}
+			.footer {
+				margin-top: 30px;
+				font-size: 0.9em;
+			}
+			.tree,
+			.bells {
+				width: 100px;
+			}
+			#garland {
+				position: absolute;
+				top: 0;
+				left: 0;
+				background-image: url('http://imapo.ru/img/christmas.png');
+				height: 36px;
+				width: 100%;
+				overflow: hidden;
+				z-index: 99;
+			}
+
+			#nums_1 {
+				padding: 100px;
+			}
+
+			.garland_1 {
+				background-position: 0 0;
+			}
+
+			.garland_2 {
+				background-position: 0 -36px;
+			}
+
+			.garland_3 {
+				background-position: 0 -72px;
+			}
+
+			.garland_4 {
+				background-position: 0 -108px;
+			}
+			@media (max-width: 600px) {
+				.title {
+					font-size: 3em;
+				}
+				.message {
+					white-space: break-all;
+					width: 70%;
+					font-size: 1em;
+					line-height: 20px;
+				}
+			}
+		</style>
+	</head>
+	<body>
+		<div id="garland" class="garland_4">
+			<div id="nums_1">1</div>
+		</div>
+
+		<script>
+			function garland() {
+				nums = document.getElementById('nums_1').innerHTML
+				if (nums == 1) {
+					document.getElementById('garland').className = 'garland_1'
+					document.getElementById('nums_1').innerHTML = '2'
+				}
+				if (nums == 2) {
+					document.getElementById('garland').className = 'garland_2'
+					document.getElementById('nums_1').innerHTML = '3'
+				}
+				if (nums == 3) {
+					document.getElementById('garland').className = 'garland_3'
+					document.getElementById('nums_1').innerHTML = '4'
+				}
+				if (nums == 4) {
+					document.getElementById('garland').className = 'garland_4'
+					document.getElementById('nums_1').innerHTML = '1'
+				}
+			}
+
+			setInterval(function () {
+				garland()
+			}, 600)
+		</script>
+		<div class="content">
+			<img
+				class="tree"
+				src="/frontend/images/christmas-tree_9075901.png"
+				alt="tree"
+			/>
+			<h1 class="title">
+				Merry Christmas <br />and<br />
+				Happy New Year
+			</h1>
+			<p class="message">Дорогой {{ name }},</p>
+			<p class="message">{{ message }}</p>
+			<img
+				class="bells"
+				src="/frontend/images/christmas-bell.png"
+				alt="bells"
+			/>
+			<div class="footer">Отправлено с любовью ❤️</div>
+		</div>
+	</body>
 </html>

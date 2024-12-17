@@ -8,16 +8,21 @@
 			body {
 				font-family: Arial, sans-serif;
 				background-image: url('/frontend/images/preview.jpg');
+				background-repeat: no-repeat;
+				background-attachment: fixed;
+				background-position: center;
 				background-size: cover;
 				color: #333;
 				margin: 0;
 				padding: 0;
-				text-align: center;
 			}
 			h1 {
 				display: flex;
 				margin-top: 50px;
 				margin-left: 100px;
+				color: white;
+			}
+			h2 {
 				color: white;
 			}
 			form {
@@ -58,18 +63,55 @@
 			#result {
 				margin-top: 30px;
 				overflow-y: auto;
+				display: flex;
+				flex-direction: column;
+				margin-left: 100px;
 			}
 			img {
 				margin-top: 20px;
 			}
 			.santa {
 				position: absolute;
-				top: 60px;
+				top: 40px;
 				right: 60px;
 			}
 			a {
 				color: #4b3e68;
 				text-decoration: none;
+			}
+			.qr-code {
+				max-width: 200px;
+				margin-top: 10px;
+				margin-bottom: 10px;
+			}
+			@media (max-width: 768px) {
+				.santa {
+					visibility: hidden;
+				}
+				h1 {
+					font-size: large;
+					text-align: center;
+					margin: 50px auto;
+					display: block;
+				}
+				form {
+					margin: 0 auto;
+				}
+				#result {
+					display: flex;
+					flex-direction: column;
+					margin-left: 0px;
+				}
+				.qr-title {
+					display: flex;
+					justify-content: center;
+				}
+				.qr-link {
+					text-align: center;
+				}
+				.qr-code {
+					align-self: center;
+				}
 			}
 		</style>
 	</head>
@@ -121,14 +163,14 @@
 						console.log('Response from server:', data)
 
 						document.getElementById('result').innerHTML = `
-                <h2>Ваш QR код</h2>
-                <img src="${data.qr_code_url}" alt="QR Code" style="max-width: 200px; margin-top: 10px;">
-                <p>Отправьте QR код или ссылку на поздравление: <a href="${data.link}" target="_blank">${data.link}</a></p>
+                <h2 class='qr-title'>Ваш QR код</h2>
+                <img class='qr-code' src="${data.qr_code_url}" alt="QR Code">
+                <p class='qr-link' style='color: white;'>Отправьте QR код или ссылку на поздравление: <a style='color: darkorange;' href="${data.link}" target="_blank">${data.link}</a></p>
             `
 					} catch (error) {
 						console.error('Error:', error)
 						document.getElementById('result').innerHTML = `
-                <p style="color: red;">An error occurred: ${error.message}</p>
+                <p style="color: white;">An error occurred: ${error.message}</p>
             `
 					}
 				})
