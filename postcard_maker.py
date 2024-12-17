@@ -16,12 +16,3 @@ def add_qr_to_postcard(postcard_path, qr_code_path, output_path, position=(10, 2
         postcard.paste(qr_code, position)
     
     postcard.save(output_path)
-
-# Пример использования
-add_qr_to_postcard(
-    'static/postcard_template/win_temp.jpg',  # Путь к открытке
-    'static/qrcodes/1fe78eb1.png',            # Путь к QR-коду
-    'static/postcards/win_temp_with_qr.jpg', # Путь для сохранения результата
-    position=(30, 846),                      # Координаты размещения QR-кода
-    qr_size=(171, 171)                         # Размер QR-кода
-)
