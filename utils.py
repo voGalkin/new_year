@@ -53,3 +53,27 @@ def delete_qrcodes():
                 print(f"Ошибка при удалении файла {file_path}: {e}")
 
     return deleted_files_count
+
+def delete_postcards():
+    """
+    Удаляет старые файлы открыток из директории static/postcards.
+    Возвращает количество удаленных файлов.
+    """
+    postcards_dir = os.path.join("static", "postcards")
+    if not os.path.exists(postcards_dir):
+        raise FileNotFoundError(f"Папка с открытками не найдена: {postcards_dir}")
+    
+    current_time = time.time()
+    deleted_files_count = 0
+    
+    for filename in os.listdir(postcards_dir):
+        file_path = os.path.join(postcards_dir, filename)
+        if os.path.isfile(file_path) and current_time - os.path.getctime(file_path) > EXPIRATION_TIME:
+            try:
+                os.remove(file_path)
+                deleted_files_count += 1
+                print(f"Удален файл: {file_path}")
+            except Exception as e:
+                print(f"Ошибка при удалении файла {file_path}: {e}")
+
+    return deleted_files_count
