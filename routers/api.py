@@ -1,13 +1,28 @@
-from fastapi import APIRouter, Form
+from fastapi import APIRouter, Form, Request  # Импорт Request
 from database import add_greeting
 from utils import generate_qr_code_file, delete_qrcodes
 from fastapi.responses import JSONResponse
 import hashlib
+from slowapi import Limiter
+from slowapi.util import get_remote_address
 
+limiter = Limiter(key_func=get_remote_address)
 router = APIRouter(tags=["API"])
 
-@router.post("/create_greeting/", summary="Создание нового поздравления и генерация QR-кода", description="Этот эндпоинт позволяет пользователю создать новое поздравление, которое связано с уникальным greeting_id. Генерируется QR-код на основе greeting_id, и данные сохраняются в базе данных.")
-async def create_greeting(name: str = Form(...), message: str = Form(...)):
+@router.post(
+    "/create_greeting/",
+    summary="Создание нового поздравления и генерация QR-кода",
+    description=(
+        "Этот эндпоинт позволяет пользователю создать новое поздравление, которое связано с уникальным greeting_id. "
+        "Генерируется QR-код на основе greeting_id, и данные сохраняются в базе данных."
+    ),
+)
+@limiter.limit("20/minute")
+async def create_greeting(
+    request: Request,  # Добавляем Request
+    name: str = Form(...),
+    message: str = Form(...),
+):
     """
     Создание нового поздравления и генерации QR-кода.
 
@@ -32,8 +47,17 @@ async def create_greeting(name: str = Form(...), message: str = Form(...)):
         "link": link
     })
 
-@router.delete("/delete_expired_qrcodes", summary="Удаление устаревших файлов QR-кодов", description="Этот эндпоинт удаляет устаревшие файлы QR-кодов из папки. Он удаляет файлы, возраст которых превышает заданное значение EXPIRATION_TIME.")
-def delete_expired_qrcodes():
+
+@router.delete(
+    "/delete_expired_qrcodes",
+    summary="Удаление устаревших файлов QR-кодов",
+    description=(
+        "Этот эндпоинт удаляет устаревшие файлы QR-кодов из папки. "
+        "Он удаляет файлы, возраст которых превышает заданное значение EXPIRATION_TIME."
+    ),
+)
+@limiter.limit("3/minute")
+def delete_expired_qrcodes(request: Request):  # Добавляем Request
     """
     Удаляет файлы из папки с QR-кодами, если они старше EXPIRATION_TIME.
 
