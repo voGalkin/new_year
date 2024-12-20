@@ -19,7 +19,7 @@ def add_greeting(greeting_id: str, name: str, message: str):
     """Функция для добавления нового приветствия в базу данных."""
     with sqlite3.connect(DB_PATH) as conn:
         # Вставка нового приветствия в таблицу
-        conn.execute("INSERT INTO greetings (greeting_id, name, message) VALUES (?, ?, ?)", (greeting_id, name, message))
+        conn.execute("INSERT OR IGNORE INTO greetings (greeting_id, name, message) VALUES (?, ?, ?)", (greeting_id, name, message))
 
 def get_greeting(greeting_id: str):
     """Функция для получения приветствия по его уникальному идентификатору."""

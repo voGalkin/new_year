@@ -132,6 +132,10 @@
 				rows="5"
 				required
 			></textarea>
+			<label>
+				<input type="checkbox" id="create-postcard" name="create-postcard" />
+				Создать открытку
+			</label>
 			<button type="submit">Создать</button>
 		</form>
 		<img class="santa" src="/frontend/images/ded-moroz.jpg" />
@@ -162,11 +166,31 @@
 						const data = await response.json()
 						console.log('Response from server:', data)
 
-						document.getElementById('result').innerHTML = `
+						let resultHTML = `
                 <h2 class='qr-title'>Ваш QR код</h2>
                 <img class='qr-code' src="${data.qr_code_url}" alt="QR Code">
-                <p class='qr-link' style='color: white;'>Отправьте QR код или ссылку на поздравление: <a style='color: darkorange;' href="${data.link}" target="_blank">${data.link}</a></p>
-            `
+                <p class='qr-link' style='color: white;'>Отправьте QR код или ссылку на поздравление: <a style='color: darkorange;' href="${data.link}" target="_blank">${data.link}</a></p>`
+
+						if (document.getElementById('create-postcard').checked) {
+							const postcardResponse = await fetch('/api/create_postcard/', {
+								method: 'POST',
+								body: new URLSearchParams({
+									qr_code_filename: data.qr_code_url.split('/').pop(),
+								}),
+							})
+
+							if (!postcardResponse.ok) {
+								throw new Error(`Server error: ${postcardResponse.status}`)
+							}
+
+							const postcardData = await postcardResponse.json()
+							resultHTML += `
+                    <h2 class='qr-title'>Ваша открытка</h2>
+                    <a href="${postcardData.output_path}" download class='qr-link' style='color: white;'>Скачать открытку</a>
+                `
+						}
+
+						document.getElementById('result').innerHTML = resultHTML
 					} catch (error) {
 						console.error('Error:', error)
 						document.getElementById('result').innerHTML = `
