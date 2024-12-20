@@ -14,6 +14,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 COPY . .
 
 RUN mkdir -p static/qrcodes
+RUN mkdir -p static/postcards
 
 # Порт
 EXPOSE 8000
