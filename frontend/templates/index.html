@@ -151,23 +151,30 @@
 			.custom-checkbox:disabled + label::before {
 				background-color: #e9ecef;
 			}
-			@media (max-width: 768px) {
+			@media (max-width: 820px) {
 				.santa {
 					visibility: hidden;
 				}
-				h1 {
-					font-size: large;
-					text-align: center;
-					margin: 50px auto;
-					display: block;
-				}
-				form {
-					margin: 0 auto;
-				}
-				#result {
+				.content {
 					display: flex;
 					flex-direction: column;
-					margin-left: 0px;
+					align-items: center;
+				}
+				form {
+					width: 90%;
+					margin: 0;
+				}
+				.custom-checkbox {
+					width: 50px;
+				}
+				h1 {
+					margin: 0;
+					font-size: 18px;
+					text-align: center;
+					margin: 40px 0;
+				}
+				#result {
+					margin: 0;
 				}
 				.qr-title {
 					display: flex;
@@ -183,8 +190,8 @@
 		</style>
 	</head>
 	<body>
-		<h1>Создай своё персональное поздравление</h1>
 		<div class="content">
+			<h1>Создай своё персональное поздравление</h1>
 			<form id="greeting-form">
 				<input
 					type="text"
