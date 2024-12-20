@@ -3,7 +3,12 @@
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Create Greeting</title>
+		<link
+			rel="icon"
+			href="/frontend/images/favicon.png.png"
+			type="image/x-icon"
+		/>
+		<title>Создать открытку</title>
 		<style>
 			body {
 				font-family: Arial, sans-serif;
@@ -15,6 +20,7 @@
 				color: #333;
 				margin: 0;
 				padding: 0;
+				overflow-x: hidden;
 			}
 			h1 {
 				display: flex;
@@ -61,10 +67,12 @@
 				background-color: #930215;
 			}
 			#result {
+				width: 400px;
 				margin-top: 30px;
-				overflow-y: auto;
 				display: flex;
 				flex-direction: column;
+				align-items: center;
+				text-align: center;
 				margin-left: 100px;
 			}
 			img {
@@ -75,6 +83,11 @@
 				top: 40px;
 				right: 60px;
 			}
+			.qr-link,
+			a {
+				width: 300px;
+				text-align: center;
+			}
 			a {
 				color: #4b3e68;
 				text-decoration: none;
@@ -83,6 +96,60 @@
 				max-width: 200px;
 				margin-top: 10px;
 				margin-bottom: 10px;
+			}
+
+			.custom-checkbox {
+				position: absolute;
+				z-index: -1;
+				opacity: 0;
+			}
+
+			.custom-checkbox + label {
+				display: inline-flex;
+				align-items: center;
+				user-select: none;
+				margin-bottom: 20px;
+			}
+			.custom-checkbox + label::before {
+				content: '';
+				display: inline-block;
+				width: 1em;
+				height: 1em;
+				flex-shrink: 0;
+				flex-grow: 0;
+				border: 1px solid #d78989;
+				border-radius: 0.25em;
+				margin-right: 0.5em;
+				background-repeat: no-repeat;
+				background-position: center center;
+				background-size: 50% 50%;
+			}
+
+			.custom-checkbox:not(:disabled):not(:checked) + label:hover::before {
+				border-color: #f59fac;
+			}
+
+			.custom-checkbox:not(:disabled):active + label::before {
+				background-color: #f59fac;
+				border-color: #f59fac;
+			}
+
+			.custom-checkbox:focus + label::before {
+				box-shadow: 0 0 0 0.2rem rgba(255, 0, 4, 0.509);
+			}
+
+			.custom-checkbox:focus:not(:checked) + label::before {
+				border-color: #ed415e;
+			}
+
+			.custom-checkbox:checked + label::before {
+				border-color: #ef0b13;
+				background-color: #ef0b13;
+				background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 8 8'%3e%3cpath fill='%23fff' d='M6.564.75l-3.59 3.612-1.538-1.55L0 4.26 2.974 7.25 8 2.193z'/%3e%3c/svg%3e");
+			}
+
+			.custom-checkbox:disabled + label::before {
+				background-color: #e9ecef;
 			}
 			@media (max-width: 768px) {
 				.santa {
@@ -117,28 +184,35 @@
 	</head>
 	<body>
 		<h1>Создай своё персональное поздравление</h1>
-		<form id="greeting-form">
-			<input
-				type="text"
-				id="name"
-				name="name"
-				placeholder="Имя получателя"
-				required
-			/>
-			<textarea
-				id="message"
-				name="message"
-				placeholder="Ваше поздравление"
-				rows="5"
-				required
-			></textarea>
-			<button type="submit">Создать</button>
-		</form>
+		<div class="content">
+			<form id="greeting-form">
+				<input
+					type="text"
+					id="name"
+					name="name"
+					placeholder="Имя получателя"
+					required
+				/>
+				<textarea
+					id="message"
+					name="message"
+					placeholder="Ваше поздравление"
+					rows="5"
+					required
+				></textarea>
+				<input
+					class="custom-checkbox"
+					name="postcard"
+					type="checkbox"
+					id="postcard"
+					value="yes"
+				/>
+				<label for="postcard">Скачать открытку</label>
+				<button type="submit">Создать</button>
+			</form>
+			<div id="result"></div>
+		</div>
 		<img class="santa" src="/frontend/images/ded-moroz.jpg" />
-
-		<!-- Здесь будет отображаться результат -->
-		<div id="result"></div>
-
 		<script>
 			document
 				.getElementById('greeting-form')
@@ -162,11 +236,40 @@
 						const data = await response.json()
 						console.log('Response from server:', data)
 
-						document.getElementById('result').innerHTML = `
+						let resultHTML = `
                 <h2 class='qr-title'>Ваш QR код</h2>
                 <img class='qr-code' src="${data.qr_code_url}" alt="QR Code">
-                <p class='qr-link' style='color: white;'>Отправьте QR код или ссылку на поздравление: <a style='color: darkorange;' href="${data.link}" target="_blank">${data.link}</a></p>
-            `
+                <p class='qr-link' style='color: white;'>Отправьте QR код или ссылку на поздравление: <a style='color: darkorange;' href="${data.link}" target="_blank">${data.link}</a></p>`
+
+						if (document.getElementById('postcard').checked) {
+							const postcardResponse = await fetch('/api/create_postcard/', {
+								method: 'POST',
+								body: new URLSearchParams({
+									qr_code_filename: data.qr_code_url.split('/').pop(),
+								}),
+							})
+
+							if (!postcardResponse.ok) {
+								throw new Error(`Server error: ${postcardResponse.status}`)
+							}
+
+							const postcardData = await postcardResponse.json()
+							// resultHTML += `
+							//       <h2 class='qr-title'>Ваша открытка</h2>
+							//       <a href="${postcardData.output_path}" download class='qr-link' style='color: white;'>Скачать открытку</a>
+							//   `
+							const downloadLink = document.createElement('a')
+							downloadLink.href = postcardData.output_path
+							downloadLink.download = 'postcard.png'
+							downloadLink.style.display = 'none'
+
+							document.body.appendChild(downloadLink)
+							downloadLink.click()
+
+							document.body.removeChild(downloadLink)
+						}
+
+						document.getElementById('result').innerHTML = resultHTML
 					} catch (error) {
 						console.error('Error:', error)
 						document.getElementById('result').innerHTML = `
