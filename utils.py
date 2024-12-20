@@ -7,6 +7,7 @@ QR_DIR = "static/qrcodes"
 EXPIRATION_TIME = 5*60
 
 os.makedirs(QR_DIR, exist_ok=True)
+BASE_URL = os.getenv("BASE_URL", "http://127.0.0.1:8000")
 
 def generate_short_hash(name: str, message: str) -> str:
     """
@@ -20,7 +21,7 @@ def generate_qr_code_file(greeting_id: str) -> str:
     Генерирует QR-код, сохраняет его в файл и возвращает путь.
     """
     # Генерация ссылки
-    url = f"http://127.0.0.1:8000/greet/{greeting_id}"
+    url = f"{BASE_URL}/greet/{greeting_id}"
 
     # Создание QR-кода
     qr_image = qrcode.make(url)

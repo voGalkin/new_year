@@ -47,12 +47,18 @@ uvicorn main:app --reload
 
 1. Установите Docker и Docker Compose.
 
-2. Запустите приложение:
+2. Создайте файл `.env` и добавьте в него переменную `BASE_URL` с адресом вашего сервера, или добавьте url в docker-compose.yml
+```
+environment:
+  - BASE_URL=http://your-domain.com
+```
+
+3. Запустите приложение:
 ```bash
 docker compose up -d
 ```
 
-3. Перейдите в браузер и откройте `http://127.0.0.1:8000/`.
+4. Перейдите в браузер и откройте `http://your-domain.com`.
 
 
 
