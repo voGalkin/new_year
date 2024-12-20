@@ -15,7 +15,12 @@
 			href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Tangerine:wght@400;700&display=swap"
 			rel="stylesheet"
 		/>
-		<title>Personal Greeting</title>
+		<link
+			rel="icon"
+			href="/frontend/images/favicon.png.png"
+			type="image/x-icon"
+		/>
+		<title>Открытка</title>
 		<style>
 			@font-face {
 				font-family: 'Majestic';
@@ -29,8 +34,20 @@
 				margin: 0;
 				padding: 0;
 			}
+			body::-webkit-scrollbar {
+				width: 5px; /* Ширина всего элемента навигации */
+			}
+
+			body::-webkit-scrollbar-track {
+				background: #fff; /* Цвет дорожки */
+			}
+
+			body::-webkit-scrollbar-thumb {
+				background-color: #ba1321; /* Цвет бегунка */
+				border-radius: 20px; /* Округление бегунка */
+			}
 			.content {
-				padding-top: 50px;
+				padding-top: 80px;
 			}
 			.title {
 				font-family: 'Tangerine';
@@ -39,19 +56,26 @@
 				margin: 30px 0;
 				line-height: 50px;
 			}
-			.message {
+			.message,
+			.username {
 				margin-top: 10px;
 				font-size: 1.5em;
 				font-family: 'Montserrat';
 				font-weight: 400;
-				white-space: break-all;
+				white-space: pre-wrap;
+				word-wrap: break-word;
 				width: 600px;
 				text-align: center;
 				margin: 30px auto;
 				line-height: 35px;
 			}
+			.username {
+				font-weight: 500;
+			}
 			.footer {
+				font-family: 'Montserrat';
 				margin-top: 30px;
+				margin-bottom: 50px;
 				font-size: 0.9em;
 			}
 			.tree,
@@ -62,7 +86,7 @@
 				position: absolute;
 				top: 0;
 				left: 0;
-				background-image: url('http://imapo.ru/img/christmas.png');
+				background-image: url('/frontend/images/garland.png');
 				height: 36px;
 				width: 100%;
 				overflow: hidden;
@@ -92,7 +116,8 @@
 				.title {
 					font-size: 3em;
 				}
-				.message {
+				.message,
+				.username {
 					white-space: break-all;
 					width: 70%;
 					font-size: 1em;
@@ -106,6 +131,26 @@
 			<div id="nums_1">1</div>
 		</div>
 
+		<div class="content">
+			<img
+				class="tree"
+				src="/frontend/images/christmas-tree_9075901.png"
+				alt="tree"
+			/>
+			<h1 class="title">
+				Merry Christmas <br />and<br />
+				Happy New Year
+			</h1>
+			<p class="username">{{name}}</p>
+			<p class="message">{{ message }}</p>
+			<div id="greeting"></div>
+			<img
+				class="bells"
+				src="/frontend/images/christmas-bell.png"
+				alt="bells"
+			/>
+			<div class="footer">Отправлено с любовью ❤️</div>
+		</div>
 		<script>
 			function garland() {
 				nums = document.getElementById('nums_1').innerHTML
@@ -130,25 +175,29 @@
 			setInterval(function () {
 				garland()
 			}, 600)
+			document.addEventListener('DOMContentLoaded', () => {
+				const greetingElement = document.querySelector('.username')
+				const userName = '{{name}}' // Замените на имя пользователя, если оно известно
+				greetingElement.textContent = getGreeting(userName)
+			})
+
+			function getGreeting(userName) {
+				const now = new Date()
+				const hours = now.getHours()
+				let greeting = ''
+
+				if (hours >= 5 && hours < 12) {
+					greeting = 'Доброе утро'
+				} else if (hours >= 12 && hours < 18) {
+					greeting = 'Добрый день'
+				} else if (hours >= 18 && hours < 23) {
+					greeting = 'Добрый вечер'
+				} else {
+					greeting = 'Доброй ночи'
+				}
+
+				return userName ? `${greeting}, ${userName}!` : greeting
+			}
 		</script>
-		<div class="content">
-			<img
-				class="tree"
-				src="/frontend/images/christmas-tree_9075901.png"
-				alt="tree"
-			/>
-			<h1 class="title">
-				Merry Christmas <br />and<br />
-				Happy New Year
-			</h1>
-			<p class="message">Дорогой {{ name }},</p>
-			<p class="message">{{ message }}</p>
-			<img
-				class="bells"
-				src="/frontend/images/christmas-bell.png"
-				alt="bells"
-			/>
-			<div class="footer">Отправлено с любовью ❤️</div>
-		</div>
 	</body>
 </html>
